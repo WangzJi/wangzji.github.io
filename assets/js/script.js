@@ -7,7 +7,13 @@ const CONFIG = {
     githubUsername: 'WangzJi',
     githubToken: null, // Optional: Add token for higher rate limits
     featuredRepos: ['wangzji.github.io'],
-    maxProjects: 6
+    maxProjects: 3,
+    // 贡献的开源项目列表
+    contributedProjects: [
+        { owner: 'apache', repo: 'seata' },
+        { owner: 'alibaba', repo: 'nacos' },
+        { owner: 'eosphoros-ai', repo: 'DB-GPT' }
+    ]
 };
 
 // =============================================
@@ -408,6 +414,22 @@ class GitHubAPI {
     }
   }
 
+  async fetchContributedProjects(projects) {
+    const results = [];
+    for (const project of projects) {
+      try {
+        const repo = await this.fetchWithCache(
+          `${this.baseUrl}/repos/${project.owner}/${project.repo}`,
+          `contributed_${project.owner}_${project.repo}`
+        );
+        results.push(repo);
+      } catch (error) {
+        console.error(`Error fetching ${project.owner}/${project.repo}:`, error);
+      }
+    }
+    return results;
+  }
+
   async getUserStats() {
     try {
       return await this.fetchWithCache(
@@ -440,7 +462,8 @@ class ProjectManager {
   }
 
   async loadProjects() {
-    const repos = await this.api.fetchRepos();
+    // 获取贡献的开源项目
+    const repos = await this.api.fetchContributedProjects(CONFIG.contributedProjects);
 
     this.projects = repos.map(repo => ({
       id: repo.id,
@@ -453,7 +476,8 @@ class ProjectManager {
       language: repo.language || 'Unknown',
       topics: repo.topics || [],
       updated: new Date(repo.updated_at),
-      isFeatured: CONFIG.featuredRepos.includes(repo.name)
+      isFeatured: true,  // 贡献项目都标记为 featured
+      isContributed: true  // 标记为贡献项目
     }));
 
     this.applyFilter('all');
@@ -585,13 +609,20 @@ class ProjectManager {
   animateCards() {
     const cards = document.querySelectorAll('.project-card');
 
-    gsap.from(cards, {
-      y: 60,
-      opacity: 0,
-      duration: 0.6,
-      stagger: 0.1,
-      ease: 'power2.out'
-    });
+    // 使用 fromTo 确保动画结束后 opacity 为 1
+    gsap.fromTo(cards, 
+      {
+        y: 60,
+        opacity: 0
+      },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: 'power2.out'
+      }
+    );
   }
 
   async loadGitHubStats() {
@@ -602,12 +633,21 @@ class ProjectManager {
         const starsElement = document.getElementById('githubContributions');
         if (starsElement) {
           const totalStars = this.projects.reduce((sum, p) => sum + p.stars, 0);
-          starsElement.textContent = totalStars;
+          // 格式化为 k 显示，如 71100 → 71.1k
+          starsElement.textContent = this.formatStars(totalStars);
         }
       }
     } catch (error) {
       console.error('Error loading GitHub stats:', error);
     }
+  }
+
+  // 格式化星标数量为 k 显示
+  formatStars(count) {
+    if (count >= 1000) {
+      return (count / 1000).toFixed(1) + 'k';
+    }
+    return count.toString();
   }
 }
 
