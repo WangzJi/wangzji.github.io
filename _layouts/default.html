@@ -19,10 +19,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <!-- Styles -->
-    <link rel="stylesheet" href="{{ '/assets/css/styles.css' | relative_url }}">
-    <link rel="stylesheet" href="{{ '/assets/css/post.css' | relative_url }}">
+    <!-- Styles - Use absolute URLs -->
+    <link rel="stylesheet" href="{{ site.url }}/assets/css/styles.css">
+    <link rel="stylesheet" href="{{ site.url }}/assets/css/post.css">
     
     <!-- Highlight.js for code -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
@@ -39,9 +40,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script>
         // Initialize syntax highlighting
-        hljs.highlightAll();
+        document.addEventListener('DOMContentLoaded', function() {
+            hljs.highlightAll();
+        });
         
-        // Initialize Mermaid
+        // Initialize Mermaid with purple theme
         mermaid.initialize({
             startOnLoad: true,
             theme: 'dark',
@@ -51,7 +54,14 @@
                 primaryBorderColor: '#7C3AED',
                 lineColor: '#6366F1',
                 secondaryColor: '#4F46E5',
-                tertiaryColor: '#1E1B4B'
+                tertiaryColor: '#1E1B4B',
+                background: '#0f0f23',
+                mainBkg: '#1E1B4B',
+                nodeBorder: '#8B5CF6',
+                clusterBkg: 'rgba(139, 92, 246, 0.1)',
+                clusterBorder: '#7C3AED',
+                titleColor: '#fff',
+                edgeLabelBackground: '#1E1B4B'
             }
         });
     </script>

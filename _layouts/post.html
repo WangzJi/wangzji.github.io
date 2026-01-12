@@ -6,14 +6,14 @@ layout: default
     <!-- Navigation -->
     <nav class="post-nav glass-nav">
         <div class="nav-container">
-            <a href="{{ '/' | relative_url }}" class="nav-logo">
+            <a href="{{ site.url }}/" class="nav-logo">
                 <span class="logo-text">Eric Wang</span>
             </a>
             <div class="nav-links">
-                <a href="{{ '/' | relative_url }}">Home</a>
-                <a href="{{ '/blog.html' | relative_url }}" class="active">Blog</a>
-                <a href="{{ '/#projects' | relative_url }}">Projects</a>
-                <a href="{{ '/#contact' | relative_url }}">Contact</a>
+                <a href="{{ site.url }}/">Home</a>
+                <a href="{{ site.url }}/blog.html" class="active">Blog</a>
+                <a href="{{ site.url }}/#projects">Projects</a>
+                <a href="{{ site.url }}/#contact">Contact</a>
             </div>
         </div>
     </nav>
@@ -21,7 +21,7 @@ layout: default
     <!-- Article Header -->
     <header class="post-header">
         <div class="post-header-content">
-            <a href="{{ '/blog.html' | relative_url }}" class="back-link">
+            <a href="{{ site.url }}/blog.html" class="back-link">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
                     <path d="M19 12H5M12 19l-7-7 7-7"/>
                 </svg>
@@ -74,7 +74,7 @@ layout: default
             <div class="related-grid">
                 {% assign related = site.posts | where_exp: "post", "post.url != page.url" | slice: 0, 3 %}
                 {% for post in related %}
-                <a href="{{ post.url | relative_url }}" class="related-card glass-card">
+                <a href="{{ site.url }}{{ post.url }}" class="related-card glass-card">
                     <span class="related-category">{{ post.category | default: 'Tech' }}</span>
                     <h3>{{ post.title }}</h3>
                     <p>{{ post.excerpt | strip_html | truncate: 80 }}</p>
