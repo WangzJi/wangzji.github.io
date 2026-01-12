@@ -41,6 +41,16 @@
   --z-content: 1;
   --z-navigation: 100;
   --z-loader: 1000;
+
+  /* Post page variables (used by post.css) - aligned with homepage */
+  --bg-color: #0a0a0f;
+  --text-color: #e0e0e0;
+  --text-secondary: #a0a0a0;
+  --accent-primary: #6c5ce7;
+  --accent-secondary: #0984e3;
+  --accent-tertiary: #00cec9;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --primary-color: #ffffff;
 }
 
 /* ===== RESET & BASE ===== */

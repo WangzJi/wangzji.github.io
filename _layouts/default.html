@@ -39,30 +39,112 @@
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script>
-        // Initialize syntax highlighting
-        document.addEventListener('DOMContentLoaded', function() {
-            hljs.highlightAll();
-        });
-        
-        // Initialize Mermaid with purple theme
+        // Initialize Mermaid with reading-friendly theme
         mermaid.initialize({
-            startOnLoad: true,
-            theme: 'dark',
+            startOnLoad: false,
+            theme: 'base',
             themeVariables: {
-                primaryColor: '#8B5CF6',
-                primaryTextColor: '#fff',
-                primaryBorderColor: '#7C3AED',
-                lineColor: '#6366F1',
-                secondaryColor: '#4F46E5',
-                tertiaryColor: '#1E1B4B',
-                background: '#0f0f23',
-                mainBkg: '#1E1B4B',
-                nodeBorder: '#8B5CF6',
-                clusterBkg: 'rgba(139, 92, 246, 0.1)',
-                clusterBorder: '#7C3AED',
-                titleColor: '#fff',
-                edgeLabelBackground: '#1E1B4B'
+                // Primary colors - soft purple
+                primaryColor: '#8b5cf6',
+                primaryTextColor: '#ffffff',
+                primaryBorderColor: '#8b5cf6',
+
+                // Secondary colors - soft blue
+                secondaryColor: '#60a5fa',
+                secondaryTextColor: '#ffffff',
+                secondaryBorderColor: '#60a5fa',
+
+                // Tertiary colors - teal
+                tertiaryColor: '#34d399',
+                tertiaryTextColor: '#ffffff',
+                tertiaryBorderColor: '#34d399',
+
+                // Background
+                background: '#1e1b4b',
+                mainBkg: '#1e1b4b',
+
+                // Lines and borders
+                lineColor: '#8b5cf6',
+
+                // Node styling
+                nodeBorder: '#8b5cf6',
+                nodeTextColor: '#ffffff',
+
+                // Cluster/subgraph styling
+                clusterBkg: 'rgba(139, 92, 246, 0.2)',
+                clusterBorder: '#8b5cf6',
+
+                // Title and labels
+                titleColor: '#ffffff',
+                edgeLabelBackground: '#1e1b4b',
+
+                // Timeline specific - harmonious color progression
+                cScale0: '#8b5cf6',
+                cScale1: '#60a5fa',
+                cScale2: '#34d399',
+                cScale3: '#a78bfa',
+                cScale4: '#38bdf8',
+                cScaleLabel0: '#ffffff',
+                cScaleLabel1: '#ffffff',
+                cScaleLabel2: '#ffffff',
+                cScaleLabel3: '#ffffff',
+                cScaleLabel4: '#ffffff',
+
+                // Sequence diagram
+                actorBkg: '#8b5cf6',
+                actorBorder: '#8b5cf6',
+                actorTextColor: '#ffffff',
+                actorLineColor: '#8b5cf6',
+                signalColor: '#e4e4e7',
+                signalTextColor: '#e4e4e7',
+                labelBoxBkgColor: '#1e1b4b',
+                labelBoxBorderColor: '#8b5cf6',
+                labelTextColor: '#ffffff',
+                loopTextColor: '#ffffff',
+                noteBkgColor: '#60a5fa',
+                noteTextColor: '#ffffff',
+                noteBorderColor: '#60a5fa',
+
+                // Flowchart
+                fillType0: '#8b5cf6',
+                fillType1: '#60a5fa',
+                fillType2: '#34d399',
+                fillType3: '#a78bfa',
+                fillType4: '#38bdf8',
+
+                // Fonts
+                fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
             }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Convert mermaid code blocks to mermaid divs
+            document.querySelectorAll('pre code.language-mermaid').forEach(function(codeBlock) {
+                var pre = codeBlock.parentElement;
+                var mermaidDiv = document.createElement('div');
+                mermaidDiv.className = 'mermaid';
+                mermaidDiv.textContent = codeBlock.textContent;
+                pre.parentNode.replaceChild(mermaidDiv, pre);
+            });
+
+            // Also check for rouge-highlighted mermaid blocks
+            document.querySelectorAll('div.language-mermaid pre code, div.highlighter-rouge.language-mermaid pre code').forEach(function(codeBlock) {
+                var container = codeBlock.closest('.language-mermaid') || codeBlock.closest('.highlighter-rouge');
+                var mermaidDiv = document.createElement('div');
+                mermaidDiv.className = 'mermaid';
+                mermaidDiv.textContent = codeBlock.textContent;
+                container.parentNode.replaceChild(mermaidDiv, container);
+            });
+
+            // Run mermaid
+            mermaid.run();
+
+            // Initialize syntax highlighting (skip mermaid blocks)
+            document.querySelectorAll('pre code').forEach(function(block) {
+                if (!block.classList.contains('language-mermaid')) {
+                    hljs.highlightElement(block);
+                }
+            });
         });
     </script>
 </body>

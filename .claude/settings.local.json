@@ -8,7 +8,8 @@
       "Bash(find:*)",
       "Skill(superpowers:brainstorming)",
       "Bash(cat:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(bundle exec jekyll build:*)"
     ]
   }
 }
