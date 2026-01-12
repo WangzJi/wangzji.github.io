@@ -704,7 +704,7 @@ class BlogManager {
       this.posts = [
         {
             "id": 8,
-            "file": "posts/hadoop-complete-guide-part1.md",
+            "url": "/blog/2026/01/12/hadoop-complete-guide-part1/",
             "title": "Hadoop 完全指南（一）：从零开始深入理解大数据生态核心基座",
             "excerpt": "从 0 到 1 深入解析 Hadoop 核心架构，涵盖 HDFS、YARN、MapReduce 运行原理与生产实践经验。",
             "category": "backend",
@@ -715,7 +715,7 @@ class BlogManager {
         },
         {
             "id": 9,
-            "file": "posts/Seata-RM-Module-Analysis.md",
+            "url": "/blog/2024/02/01/seata-rm-module-analysis/",
             "title": "深入解析Seata RM模块：资源管理器的核心机制与实践",
             "excerpt": "详细拆解 Seata RM 模块的工作流程，分析其如何代理数据源并与 TC 交互以完成分布式事务的两阶段提交。",
             "category": "backend",
@@ -726,7 +726,7 @@ class BlogManager {
         },
         {
             "id": 7,
-            "file": "posts/seata-tm-module-complete-analysis.md",
+            "url": "/blog/2024/01/20/seata-tm-module-analysis/",
             "title": "深入解析Seata TM模块：分布式事务管理器的设计与实现",
             "excerpt": "深入分析Seata框架中TM（Transaction Manager）模块的架构设计、核心实现和扩展机制，探讨分布式事务管理的最佳实践。",
             "category": "backend",
@@ -749,8 +749,11 @@ class BlogManager {
       return;
     }
 
-    grid.innerHTML = this.posts.map(post => `
-      <div class="project-card blog-card" onclick="window.location.href='post.html?id=${post.id}'" style="cursor: pointer;">
+    grid.innerHTML = this.posts.map(post => {
+      // Use Jekyll URL if available, fallback to old format
+      const postUrl = post.url || `post.html?id=${post.id}`;
+      return `
+      <div class="project-card blog-card" onclick="window.location.href='${postUrl}'" style="cursor: pointer;">
         <div class="project-header">
           <div class="project-icon" style="font-size: 24px;">
             ${this.getCategoryIcon(post.category)}
@@ -775,7 +778,7 @@ class BlogManager {
           </div>
         </div>
       </div>
-    `).join('');
+    `}).join('');
 
     // Animate blog cards
     gsap.fromTo('#blogGrid .project-card',
