@@ -266,24 +266,7 @@ class AnimationsManager {
       });
     });
 
-    // Skills cards stagger animation
-    const skillCards = document.querySelectorAll('.skill-category');
 
-    if (skillCards.length > 0) {
-      gsap.from(skillCards, {
-        scrollTrigger: {
-          trigger: '.skills-grid',
-          start: 'top 80%',
-          end: 'top 40%',
-          toggleActions: 'play none none reverse'
-        },
-        y: 80,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.15,
-        ease: 'power3.out'
-      });
-    }
   }
 }
 
@@ -463,7 +446,50 @@ class ProjectManager {
 
   async loadProjects() {
     // 获取贡献的开源项目
-    const repos = await this.api.fetchContributedProjects(CONFIG.contributedProjects);
+    let repos = await this.api.fetchContributedProjects(CONFIG.contributedProjects);
+
+    // Fallback data if API fails or returns empty (e.g. local dev CORS issues)
+    if (repos.length === 0) {
+      console.warn('Using fallback project data due to API fetch failure');
+      repos = [
+        {
+          id: 101,
+          name: 'incubator-seata',
+          description: 'Apache Seata is a high-performance distributed transaction solution that delivers high performance and easy to use distributed transaction services under a microservices architecture.',
+          html_url: 'https://github.com/apache/incubator-seata',
+          homepage: 'https://seata.apache.org/',
+          stargazers_count: 24500,
+          forks_count: 8200,
+          language: 'Java',
+          topics: ['distributed-transaction', 'microservices', 'java', 'high-performance'],
+          updated_at: new Date().toISOString()
+        },
+        {
+          id: 102,
+          name: 'hadoop',
+          description: 'Apache Hadoop is a framework that allows for the distributed processing of large data sets across clusters of computers using simple programming models.',
+          html_url: 'https://github.com/apache/hadoop',
+          homepage: 'https://hadoop.apache.org/',
+          stargazers_count: 14200,
+          forks_count: 12500,
+          language: 'Java',
+          topics: ['big-data', 'distributed-systems', 'mapreduce', 'hdfs'],
+          updated_at: new Date().toISOString()
+        },
+        {
+          id: 103,
+          name: 'wangzji.github.io',
+          description: 'Personal portfolio and blog built with modern web technologies, featuring matrix rain effects, glassmorphism, and dynamic content loading.',
+          html_url: 'https://github.com/WangzJi/wangzji.github.io',
+          homepage: 'https://wangzji.github.io',
+          stargazers_count: 128,
+          forks_count: 45,
+          language: 'HTML',
+          topics: ['portfolio', 'blog', 'css-animations', 'personal-website'],
+          updated_at: new Date().toISOString()
+        }
+      ];
+    }
 
     this.projects = repos.map(repo => ({
       id: repo.id,
@@ -652,6 +678,136 @@ class ProjectManager {
 }
 
 // =============================================
+// BLOG MANAGER
+// =============================================
+
+class BlogManager {
+  constructor() {
+    this.posts = [];
+  }
+
+  async init() {
+    await this.loadPosts();
+  }
+
+  async loadPosts() {
+    try {
+      const response = await fetch('posts.json');
+      if (!response.ok) throw new Error('Network response was not ok');
+      const data = await response.json();
+      // Sort by date descending and take top 3
+      this.posts = data.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 3);
+      this.renderPosts();
+    } catch (error) {
+      console.warn('Error loading blog posts, using fallback data:', error);
+      // Fallback data for local development or error cases
+      this.posts = [
+        {
+            "id": 8,
+            "file": "posts/hadoop-complete-guide-part1.md",
+            "title": "Hadoop 完全指南（一）：从零开始深入理解大数据生态核心基座",
+            "excerpt": "从 0 到 1 深入解析 Hadoop 核心架构，涵盖 HDFS、YARN、MapReduce 运行原理与生产实践经验。",
+            "category": "backend",
+            "tags": ["Hadoop", "Big Data", "Distributed Systems", "Java"],
+            "date": "2026-01-12",
+            "readTime": "35 min read",
+            "author": "Eric Wang"
+        },
+        {
+            "id": 9,
+            "file": "posts/Seata-RM-Module-Analysis.md",
+            "title": "深入解析Seata RM模块：资源管理器的核心机制与实践",
+            "excerpt": "详细拆解 Seata RM 模块的工作流程，分析其如何代理数据源并与 TC 交互以完成分布式事务的两阶段提交。",
+            "category": "backend",
+            "tags": ["Seata", "RM", "Distributed Transactions", "Source Code"],
+            "date": "2024-02-01",
+            "readTime": "20 min read",
+            "author": "Eric Wang"
+        },
+        {
+            "id": 7,
+            "file": "posts/seata-tm-module-complete-analysis.md",
+            "title": "深入解析Seata TM模块：分布式事务管理器的设计与实现",
+            "excerpt": "深入分析Seata框架中TM（Transaction Manager）模块的架构设计、核心实现和扩展机制，探讨分布式事务管理的最佳实践。",
+            "category": "backend",
+            "tags": ["Seata", "分布式事务", "微服务", "Java"],
+            "date": "2024-01-20",
+            "readTime": "25 min read",
+            "author": "Eric Wang"
+        }
+      ];
+      this.renderPosts();
+    }
+  }
+
+  renderPosts() {
+    const grid = document.getElementById('blogGrid');
+    if (!grid) return;
+
+    if (this.posts.length === 0) {
+      grid.innerHTML = '<div class="loading-state"><p>No articles found.</p></div>';
+      return;
+    }
+
+    grid.innerHTML = this.posts.map(post => `
+      <div class="project-card blog-card" onclick="window.location.href='post.html?id=${post.id}'" style="cursor: pointer;">
+        <div class="project-header">
+          <div class="project-icon" style="font-size: 24px;">
+            ${this.getCategoryIcon(post.category)}
+          </div>
+          <div class="project-links">
+             <span style="font-size: 13px; color: rgba(255,255,255,0.5); font-family: var(--font-mono);">${post.date}</span>
+          </div>
+        </div>
+
+        <h3 class="project-name">${post.title}</h3>
+        <p class="project-description">${post.excerpt}</p>
+
+        <div class="project-meta">
+          <div class="meta-item">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+              <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+            </svg>
+            <span>${post.readTime}</span>
+          </div>
+          <div class="project-tags">
+            ${post.tags.slice(0, 3).map(tag => `<span class="project-tag">${tag}</span>`).join('')}
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    // Animate blog cards
+    gsap.fromTo('#blogGrid .project-card',
+      { y: 60, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '#blogGrid',
+          start: 'top 85%',
+          toggleActions: 'play none none reverse'
+        }
+      }
+    );
+  }
+
+  getCategoryIcon(category) {
+    const icons = {
+      'backend': '⚙️',
+      'frontend': '🎨',
+      'devops': '☁️',
+      'ai': '🤖',
+      'data': '📊'
+    };
+    return icons[category] || '📝';
+  }
+}
+
+// =============================================
 // INITIALIZE
 // =============================================
 
@@ -671,4 +827,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Load GitHub data
   const projectManager = new ProjectManager();
   projectManager.init();
+
+  // Initialize Blog Manager
+  const blogManager = new BlogManager();
+  blogManager.init();
 });

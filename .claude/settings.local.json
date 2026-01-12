@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(frontend-design:frontend-design)",
+      "Bash(python3:*)",
+      "Bash(curl:*)",
+      "Bash(tree:*)",
+      "Bash(find:*)",
+      "Skill(superpowers:brainstorming)",
+      "Bash(cat:*)",
+      "Bash(grep:*)"
+    ]
+  }
+}

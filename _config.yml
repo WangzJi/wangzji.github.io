@@ -1,0 +1,56 @@
+# Jekyll 配置文件
+# Site settings
+title: Eric Wang's Blog
+description: 分享技术见解，记录成长历程
+author: Eric Wang
+url: "https://wangzji.github.io"
+baseurl: ""
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+
+# Kramdown 配置 - 支持更好的 Markdown 渲染
+kramdown:
+  input: GFM
+  hard_wrap: false
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    block:
+      line_numbers: true
+
+# 永久链接格式
+permalink: /blog/:year/:month/:day/:title/
+
+# 集合配置
+collections_dir: ""
+
+# 排除不需要处理的文件
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+  - .git
+  - .gitignore
+  - README.md
+  - posts.json
+
+# 包含的文件
+include:
+  - _posts
+
+# 默认值
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+      author: "Eric Wang"
+
+# 插件
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap

@@ -1,16 +1,16 @@
+---
+layout: null
+---
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blog - Eric Wang</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
-    <link rel="stylesheet" href="assets/css/blog.css">
+    <link rel="stylesheet" href="{{ '/assets/css/styles.css' | relative_url }}">
+    <link rel="stylesheet" href="{{ '/assets/css/blog.css' | relative_url }}">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <!-- Marked.js for Markdown parsing (if needed) -->
-    <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
 </head>
 <body>
     <!-- Matrix Rain Background -->
@@ -38,18 +38,17 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-                <a href="index.html">
+                <a href="{{ '/' | relative_url }}">
                     <span class="logo-bracket">[</span>
                     <span class="logo-text">ERIC</span>
                     <span class="logo-bracket">]</span>
                 </a>
             </div>
             <div class="nav-menu">
-                <a href="index.html" class="nav-link">Home</a>
-                <a href="index.html#skills" class="nav-link">Skills</a>
-                <a href="index.html#projects" class="nav-link">Projects</a>
-                <a href="blog.html" class="nav-link active">Blog</a>
-                <a href="index.html#contact" class="nav-link">Contact</a>
+                <a href="{{ '/' | relative_url }}" class="nav-link">Home</a>
+                <a href="{{ '/#projects' | relative_url }}" class="nav-link">Projects</a>
+                <a href="{{ '/blog.html' | relative_url }}" class="nav-link active">Blog</a>
+                <a href="{{ '/#contact' | relative_url }}" class="nav-link">Contact</a>
             </div>
             <div class="nav-toggle" id="mobile-menu">
                 <span class="bar"></span>
@@ -117,23 +116,45 @@
         </div>
     </section>
 
-    <!-- Blog Posts -->
+    <!-- Blog Posts - Jekyll Generated -->
     <section class="blog-posts">
         <div class="container">
             <div class="posts-grid" id="posts-grid">
-                <!-- Blog posts will be dynamically loaded here -->
+                {% for post in site.posts %}
+                <article class="post-card" data-category="{{ post.category }}">
+                    <div class="post-card-inner">
+                        <div class="post-card-header">
+                            <span class="post-category">{{ post.category | upcase }}</span>
+                            <span class="post-date">{{ post.date | date: "%Y-%m-%d" }}</span>
+                        </div>
+                        <h2 class="post-title">
+                            <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+                        </h2>
+                        <p class="post-excerpt">{{ post.excerpt | strip_html | truncate: 150 }}</p>
+                        <div class="post-meta">
+                            <span class="read-time">
+                                <i class="far fa-clock"></i> {{ post.read_time | default: "5 min read" }}
+                            </span>
+                            <div class="post-tags">
+                                {% for tag in post.tags limit:3 %}
+                                <span class="tag">{{ tag }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <a href="{{ post.url | relative_url }}" class="read-more">
+                            <span>阅读全文</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </article>
+                {% endfor %}
             </div>
             
-            <!-- Load More Button -->
-            <div class="load-more-container">
-                <button class="load-more-btn" id="load-more">
-                    <span class="btn-text">LOAD MORE POSTS</span>
-                    <span class="btn-icon">
-                        <i class="fas fa-chevron-down"></i>
-                    </span>
-                    <div class="btn-particles"></div>
-                </button>
+            {% if site.posts.size == 0 %}
+            <div class="no-posts">
+                <p>暂无文章，敬请期待...</p>
             </div>
+            {% endif %}
         </div>
     </section>
 
@@ -141,13 +162,47 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
-                <p>&copy; 2025 Eric Wang. Crafted with <i class="fas fa-heart"></i></p>
+                <p>&copy; {{ site.time | date: "%Y" }} Eric Wang. Crafted with <i class="fas fa-heart"></i></p>
             </div>
         </div>
     </footer>
 
-    <script src="assets/js/script.js"></script>
-    <script src="assets/js/dataService.js"></script>
-    <script src="assets/js/blog.js"></script>
+    <script src="{{ '/assets/js/script.js' | relative_url }}"></script>
+    
+    <script>
+    // Category filter
+    document.querySelectorAll('.category-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            const category = this.dataset.category;
+            
+            // Update active state
+            document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Filter posts
+            document.querySelectorAll('.post-card').forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+    
+    // Search functionality
+    document.getElementById('blog-search').addEventListener('input', function() {
+        const query = this.value.toLowerCase();
+        document.querySelectorAll('.post-card').forEach(card => {
+            const title = card.querySelector('.post-title').textContent.toLowerCase();
+            const excerpt = card.querySelector('.post-excerpt').textContent.toLowerCase();
+            if (title.includes(query) || excerpt.includes(query)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+    </script>
 </body>
-</html> 
+</html>

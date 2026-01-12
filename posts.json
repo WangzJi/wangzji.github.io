@@ -1,6 +1,28 @@
 
 [
     {
+        "id": 8,
+        "file": "posts/hadoop-complete-guide-part1.md",
+        "title": "Hadoop 完全指南（一）：从零开始深入理解大数据生态核心基座",
+        "excerpt": "从 0 到 1 深入解析 Hadoop 核心架构，涵盖 HDFS、YARN、MapReduce 运行原理与生产实践经验。",
+        "category": "backend",
+        "tags": ["Hadoop", "Big Data", "Distributed Systems", "Java"],
+        "date": "2026-01-12",
+        "readTime": "35 min read",
+        "author": "Eric Wang"
+    },
+    {
+        "id": 9,
+        "file": "posts/Seata-RM-Module-Analysis.md",
+        "title": "深入解析Seata RM模块：资源管理器的核心机制与实践",
+        "excerpt": "详细拆解 Seata RM 模块的工作流程，分析其如何代理数据源并与 TC 交互以完成分布式事务的两阶段提交。",
+        "category": "backend",
+        "tags": ["Seata", "RM", "Distributed Transactions", "Source Code"],
+        "date": "2024-02-01",
+        "readTime": "20 min read",
+        "author": "Eric Wang"
+    },
+    {
         "id": 7,
         "file": "posts/seata-tm-module-complete-analysis.md",
         "title": "深入解析Seata TM模块：分布式事务管理器的设计与实现",
