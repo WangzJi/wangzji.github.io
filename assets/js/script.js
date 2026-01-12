@@ -4,16 +4,16 @@
 
 // Configuration
 const CONFIG = {
-    githubUsername: 'WangzJi',
-    githubToken: null, // Optional: Add token for higher rate limits
-    featuredRepos: ['wangzji.github.io'],
-    maxProjects: 3,
-    // 贡献的开源项目列表
-    contributedProjects: [
-        { owner: 'apache', repo: 'seata' },
-        { owner: 'alibaba', repo: 'nacos' },
-        { owner: 'eosphoros-ai', repo: 'DB-GPT' }
-    ]
+  githubUsername: 'WangzJi',
+  githubToken: null, // Optional: Add token for higher rate limits
+  featuredRepos: ['wangzji.github.io'],
+  maxProjects: 3,
+  // 贡献的开源项目列表
+  contributedProjects: [
+    { owner: 'apache', repo: 'incubator-seata' },
+    { owner: 'alibaba', repo: 'nacos' },
+    { owner: 'eosphoros-ai', repo: 'DB-GPT' }
+  ]
 };
 
 // =============================================
@@ -455,38 +455,50 @@ class ProjectManager {
         {
           id: 101,
           name: 'incubator-seata',
-          description: 'Apache Seata is a high-performance distributed transaction solution that delivers high performance and easy to use distributed transaction services under a microservices architecture.',
+          description: ':fire: Seata is an easy-to-use, high-performance, open source distributed transaction solution.',
           html_url: 'https://github.com/apache/incubator-seata',
           homepage: 'https://seata.apache.org/',
-          stargazers_count: 24500,
-          forks_count: 8200,
+          stargazers_count: 25924,
+          forks_count: 8895,
           language: 'Java',
-          topics: ['distributed-transaction', 'microservices', 'java', 'high-performance'],
-          updated_at: new Date().toISOString()
+          topics: ['at', 'consistency', 'distributed-transaction', 'microservice'],
+          updated_at: new Date().toISOString(),
+          owner: {
+            login: 'apache',
+            avatar_url: 'https://avatars.githubusercontent.com/u/47359?v=4'
+          }
         },
         {
           id: 102,
-          name: 'hadoop',
-          description: 'Apache Hadoop is a framework that allows for the distributed processing of large data sets across clusters of computers using simple programming models.',
-          html_url: 'https://github.com/apache/hadoop',
-          homepage: 'https://hadoop.apache.org/',
-          stargazers_count: 14200,
-          forks_count: 12500,
+          name: 'nacos',
+          description: 'an easy-to-use dynamic service discovery, configuration and service management platform for building cloud native applications.',
+          html_url: 'https://github.com/alibaba/nacos',
+          homepage: 'https://nacos.io',
+          stargazers_count: 32504,
+          forks_count: 13221,
           language: 'Java',
-          topics: ['big-data', 'distributed-systems', 'mapreduce', 'hdfs'],
-          updated_at: new Date().toISOString()
+          topics: ['a2a-registry', 'ai-registry', 'alibaba', 'config'],
+          updated_at: new Date().toISOString(),
+          owner: {
+            login: 'alibaba',
+            avatar_url: 'https://avatars.githubusercontent.com/u/1961952?v=4'
+          }
         },
         {
           id: 103,
-          name: 'wangzji.github.io',
-          description: 'Personal portfolio and blog built with modern web technologies, featuring matrix rain effects, glassmorphism, and dynamic content loading.',
-          html_url: 'https://github.com/WangzJi/wangzji.github.io',
-          homepage: 'https://wangzji.github.io',
-          stargazers_count: 128,
-          forks_count: 45,
-          language: 'HTML',
-          topics: ['portfolio', 'blog', 'css-animations', 'personal-website'],
-          updated_at: new Date().toISOString()
+          name: 'DB-GPT',
+          description: 'AI Native Data App Development framework with AWEL(Agentic Workflow Expression Language) and Agents',
+          html_url: 'https://github.com/eosphoros-ai/DB-GPT',
+          homepage: 'https://docs.dbgpt.site',
+          stargazers_count: 17963,
+          forks_count: 2520,
+          language: 'Python',
+          topics: ['agents', 'bgi', 'database', 'deepseek'],
+          updated_at: new Date().toISOString(),
+          owner: {
+            login: 'eosphoros-ai',
+            avatar_url: 'https://avatars.githubusercontent.com/u/137628614?v=4'
+          }
         }
       ];
     }
@@ -503,7 +515,11 @@ class ProjectManager {
       topics: repo.topics || [],
       updated: new Date(repo.updated_at),
       isFeatured: true,  // 贡献项目都标记为 featured
-      isContributed: true  // 标记为贡献项目
+      isContributed: true,  // 标记为贡献项目
+      owner: {
+        login: repo.owner ? repo.owner.login : '',
+        avatarUrl: repo.owner ? repo.owner.avatar_url : ''
+      }
     }));
 
     this.applyFilter('all');
@@ -560,8 +576,14 @@ class ProjectManager {
     grid.innerHTML = this.filteredProjects.map(project => `
       <div class="project-card" data-featured="${project.isFeatured}">
         <div class="project-header">
-          <div class="project-icon">
-            ${this.getProjectIcon(project.language)}
+          <div class="project-icon" style="overflow: hidden; padding: 8px; background: rgba(255,255,255,0.05);">
+            ${this.getProjectLogoUrl(project.name) ?
+        `<img src="${this.getProjectLogoUrl(project.name)}" alt="${project.name}" style="width: 100%; height: 100%; object-fit: contain;">` :
+        (project.owner && project.owner.avatarUrl ?
+          `<img src="${project.owner.avatarUrl}" alt="${project.owner.login}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">` :
+          this.getProjectIcon(project.language)
+        )
+      }
           </div>
           <div class="project-links">
             <a href="${project.url}" target="_blank" rel="noopener noreferrer"
@@ -605,8 +627,8 @@ class ProjectManager {
         ${project.topics.length > 0 ? `
           <div class="project-tags">
             ${project.topics.slice(0, 4).map(topic =>
-              `<span class="project-tag">${topic}</span>`
-            ).join('')}
+        `<span class="project-tag">${topic}</span>`
+      ).join('')}
           </div>
         ` : ''}
       </div>
@@ -614,6 +636,17 @@ class ProjectManager {
 
     // Animate cards after rendering
     this.animateCards();
+  }
+
+  // Map project names to local logo images
+  getProjectLogoUrl(projectName) {
+    const logoMap = {
+      'incubator-seata': 'assets/images/seata-logo.png',
+      'seata': 'assets/images/seata-logo.png',
+      'nacos': 'assets/images/nacos-logo.png'
+      // DB-GPT uses GitHub avatar instead
+    };
+    return logoMap[projectName] || null;
   }
 
   getProjectIcon(language) {
@@ -636,7 +669,7 @@ class ProjectManager {
     const cards = document.querySelectorAll('.project-card');
 
     // 使用 fromTo 确保动画结束后 opacity 为 1
-    gsap.fromTo(cards, 
+    gsap.fromTo(cards,
       {
         y: 60,
         opacity: 0
@@ -703,37 +736,37 @@ class BlogManager {
       // Fallback data for local development or error cases
       this.posts = [
         {
-            "id": 8,
-            "url": "/blog/2026/01/12/hadoop-complete-guide-part1/",
-            "title": "Hadoop 完全指南（一）：从零开始深入理解大数据生态核心基座",
-            "excerpt": "从 0 到 1 深入解析 Hadoop 核心架构，涵盖 HDFS、YARN、MapReduce 运行原理与生产实践经验。",
-            "category": "backend",
-            "tags": ["Hadoop", "Big Data", "Distributed Systems", "Java"],
-            "date": "2026-01-12",
-            "readTime": "35 min read",
-            "author": "Eric Wang"
+          "id": 8,
+          "url": "/blog/2026/01/12/hadoop-complete-guide-part1/",
+          "title": "Hadoop 完全指南（一）：从零开始深入理解大数据生态核心基座",
+          "excerpt": "从 0 到 1 深入解析 Hadoop 核心架构，涵盖 HDFS、YARN、MapReduce 运行原理与生产实践经验。",
+          "category": "backend",
+          "tags": ["Hadoop", "Big Data", "Distributed Systems", "Java"],
+          "date": "2026-01-12",
+          "readTime": "35 min read",
+          "author": "Eric Wang"
         },
         {
-            "id": 9,
-            "url": "/blog/2024/02/01/seata-rm-module-analysis/",
-            "title": "深入解析Seata RM模块：资源管理器的核心机制与实践",
-            "excerpt": "详细拆解 Seata RM 模块的工作流程，分析其如何代理数据源并与 TC 交互以完成分布式事务的两阶段提交。",
-            "category": "backend",
-            "tags": ["Seata", "RM", "Distributed Transactions", "Source Code"],
-            "date": "2024-02-01",
-            "readTime": "20 min read",
-            "author": "Eric Wang"
+          "id": 9,
+          "url": "/blog/2024/02/01/seata-rm-module-analysis/",
+          "title": "深入解析Seata RM模块：资源管理器的核心机制与实践",
+          "excerpt": "详细拆解 Seata RM 模块的工作流程，分析其如何代理数据源并与 TC 交互以完成分布式事务的两阶段提交。",
+          "category": "backend",
+          "tags": ["Seata", "RM", "Distributed Transactions", "Source Code"],
+          "date": "2024-02-01",
+          "readTime": "20 min read",
+          "author": "Eric Wang"
         },
         {
-            "id": 7,
-            "url": "/blog/2024/01/20/seata-tm-module-analysis/",
-            "title": "深入解析Seata TM模块：分布式事务管理器的设计与实现",
-            "excerpt": "深入分析Seata框架中TM（Transaction Manager）模块的架构设计、核心实现和扩展机制，探讨分布式事务管理的最佳实践。",
-            "category": "backend",
-            "tags": ["Seata", "分布式事务", "微服务", "Java"],
-            "date": "2024-01-20",
-            "readTime": "25 min read",
-            "author": "Eric Wang"
+          "id": 7,
+          "url": "/blog/2024/01/20/seata-tm-module-analysis/",
+          "title": "深入解析Seata TM模块：分布式事务管理器的设计与实现",
+          "excerpt": "深入分析Seata框架中TM（Transaction Manager）模块的架构设计、核心实现和扩展机制，探讨分布式事务管理的最佳实践。",
+          "category": "backend",
+          "tags": ["Seata", "分布式事务", "微服务", "Java"],
+          "date": "2024-01-20",
+          "readTime": "25 min read",
+          "author": "Eric Wang"
         }
       ];
       this.renderPosts();
